@@ -1,31 +1,53 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykoh <ykoh@student.42seoul.kr>             +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/27 09:47:02 by ykoh              #+#    #+#             */
+/*   Updated: 2021/09/27 09:47:11 by ykoh             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <limits.h>
 #include <unistd.h>
 #include <signal.h>
 
-static void send_char(pid_t pid, char c) {
-  int bit = 7;
+static void	send_char(pid_t pid, char c)
+{
+	int	bit;
 
-  while (bit != -1) {
-    if (c & (1 << bit)) {
-      kill(pid, SIGUSR1);
-    } else {
-      kill(pid, SIGUSR2);
-    }
-    bit--;
-    usleep(100);
-  }
+	bit = 7;
+	while (bit != -1)
+	{
+		if (c & (1 << bit))
+		{
+			kill(pid, SIGUSR1);
+		}
+		else
+		{
+			kill(pid, SIGUSR2);
+		}
+		bit--;
+		usleep(100);
+	}
 }
 
-static void send_str(pid_t pid, char *str) {
-  int i = 0;
-  while (str[i]) {
-    send_char(pid, str[i]);
-    i++;
-  }
-  send_char(pid, '\0');
+static void	send_str(pid_t pid, char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		send_char(pid, str[i]);
+		i++;
+	}
+	send_char(pid, '\0');
 }
 
-static int  ft_atoi(const char *str)
+static int	ft_atoi(const char *str)
 {
 	char				neg;
 	unsigned long long	num;
@@ -45,17 +67,23 @@ static int  ft_atoi(const char *str)
 		return (0);
 	if (num > LONG_MAX && neg == 0)
 		return (-1);
-	return (neg ? -num : num);
+	if (neg)
+		return (-num);
+	else
+		return (num);
 }
 
-int         main(int argc, char*argv[]) {
-  if (argc < 3) {
-    return (1);
-  }
-  pid_t pid = ft_atoi(argv[1]);
-  char  *str = argv[2];
+int	main(int argc, char*argv[])
+{
+	pid_t	pid;
+	char	*str;
 
-  send_str(pid, str);
-
-  return (0);
+	if (argc < 3)
+	{
+		return (1);
+	}
+	pid = ft_atoi(argv[1]);
+	str = argv[2];
+	send_str(pid, str);
+	return (0);
 }
