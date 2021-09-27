@@ -1,22 +1,17 @@
 #include <limits.h>
 #include <unistd.h>
 #include <signal.h>
-#include <stdio.h>
-#include <strings.h>
 
 static void sig_handler(int sig) {
-  //// 11111100 00011110 00100101 00000000
-  static char buf[100000000] = {'\0', };
+  static char buf[10000000] = {'\0', };
   static int bit = 7;
   static int i = 0;
 
   if (sig == SIGUSR1) {
     buf[i] |= (1 << bit);
-    //printf("1 %d\n", bit);
   }
   if (sig == SIGUSR2) {
     buf[i] &= ~(1 << bit);
-    //printf("0 %d\n", bit);
   }
   bit--;
 
@@ -54,6 +49,7 @@ static void ft_putnbr_fd(int n, int fd)
 
 int     main(void) {
   pid_t pid = getpid();
+
   ft_putnbr_fd(pid, 1);
   write(1,"\n", 1);
   signal(SIGUSR1, sig_handler);
@@ -61,6 +57,5 @@ int     main(void) {
   while (1) {
     pause();
   }
-
   return (0);
 }
