@@ -1,3 +1,4 @@
+#include <limits.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
@@ -31,9 +32,30 @@ static void sig_handler(int sig) {
 
 }
 
+static void ft_putnbr_fd(int n, int fd)
+{
+	if (n < 0)
+  {
+		write(fd, "-", 1);
+  }
+	if (n == INT_MIN)
+  {
+		write(fd, "2147483648", 10);
+    return ;
+  }
+	n = (n < 0) ? -n : n;
+	if (n > 9)
+  {
+		ft_putnbr_fd(n / 10, fd);
+  }
+	write(fd, &"0123456789"[n % 10], 1);
+}
+
+
 int     main(void) {
   pid_t pid = getpid();
-  printf("%d\n", pid);
+  ft_putnbr_fd(pid, 1);
+  write(1,"\n", 1);
   signal(SIGUSR1, sig_handler);
   signal(SIGUSR2, sig_handler);
   while (1) {
