@@ -13,10 +13,11 @@
 #include <limits.h>
 #include <unistd.h>
 #include <signal.h>
+#define MAX_STR_LENGTH 10000000
 
 static void	sig_handler(int sig)
 {
-	static char	buf[10000000] = {'\0', };
+	static char	buf[MAX_STR_LENGTH] = {'\0', };
 	static int	bit = 7;
 	static int	i = 0;
 
